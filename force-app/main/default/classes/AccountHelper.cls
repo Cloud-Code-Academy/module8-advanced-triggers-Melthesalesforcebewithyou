@@ -7,6 +7,7 @@ This class is intended to modularize the logic used in the `AccountTrigger` to e
 This class is currently stubbed out. As part of this exercise, you are expected to:
 1. Implement the method bodies to carry out the specified operations on Account records.
 2. Refactor the `AccountTrigger` to utilize the methods provided in this `AccountHelper` class.
+    -- Call the AccountHelper methods from within the trigger's context (before/after insert, etc.)
 
 Methods:
 - `setTypeProspect(SObject objects)`: 
@@ -24,23 +25,29 @@ Methods:
     - Purpose: Create a default contact related to the Account after the Account is inserted. You'll need to define the method's signature and implement its logic.
 
 Remember:
-Always ensure that your helper methods are bulk-safe to handle multiple records efficiently. 
+Always ensure that your helper methods are bulk-safe to handle multiple records efficiently.
+--NO SOQL QUERY IN FOR LOOP  
+--Use Lists or Maps 
+--Use for loop to iterate over lists of records 
+--Use if conditions to check and update fields 
 */
 public with sharing class AccountHelper {
     
     public void setTypeProspect(SObject objects){
-
+        //check if Account.Type != 'Prospect' set to 'Prospect'
     }
 
-    void addressCopy(){
-
+    public void addressCopy(){
+        //Set Account.ShippingAddress = Account.BillingAddress
     }
 
-    //[public | private ] [static] data_type setRating (input parameters) {
-    //  The body of the method
-    //}
+    public void setRating (input parameters) {
+        //Evaluate certain conditions on Account 
+        //Assign Rating based on evaluation 
+    }
 
-    //[public | private ] [static] data_type defaultContact (input parameters) {
-    //  The body of the method
-    //}
+    public void defaultContact (input parameters) {
+        //Create default Contact related to the Account AFTER insert
+        //insert Contacts
+    }
 }
