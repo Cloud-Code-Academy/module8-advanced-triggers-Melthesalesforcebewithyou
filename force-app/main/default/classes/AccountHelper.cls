@@ -35,27 +35,42 @@ Always ensure that your helper methods are bulk-safe to handle multiple records 
 */
 public with sharing class AccountHelper {
     
-    public static void setTypeProspect(List<Account> accounts){
+    public static void setTypeProspect(Account acc){
         //check if Account.Type != 'Prospect' set to 'Prospect'
-        for (Account acc : accounts) {
-            if (acc.Type != 'Prospect') {
-                acc.Type = 'Prospect'; 
-            }
+        acc.Type = 'Prospect';
+        }
+
+    public static void addressCopy(Account acc){
+        //Set Account.ShippingAddress = Account.BillingAddress
+        acc.BillingStreet = acc.ShippingStreet;
+        acc.BillingCity = acc.ShippingCity;
+        acc.BillingState = acc.ShippingState;
+        acc.BillingPostalCode = acc.ShippingPostalCode;
+        acc.BillingCountry = acc.ShippingCountry;
+    }
+
+    public static void setRating (Account acc) {
+        //Evaluate certain conditions on Account 
+        //Assign Rating based on evaluation 
+        if (acc.Phone != null && acc.Website != null && acc.Fax != null) {
+            acc.Rating = 'Hot';
         }
     }
 
-    public static void addressCopy(List<Account> accounts){
-        //Set Account.ShippingAddress = Account.BillingAddress
-
-    }
-
-    public void setRating (List<Account> accounts) {
-        //Evaluate certain conditions on Account 
-        //Assign Rating based on evaluation 
-    }
-
-    public void defaultContact (List<Account> accounts) {
+    public static void defaultContact (List<Account> accounts) {
         //Create default Contact related to the Account AFTER insert
         //insert Contacts
+        List<Contact> contactsToInsert = new List<Contact>();
+        for (Account acc : accounts) {
+            Contact newContact = new Contact(
+                LastName = 'DefaultContact',
+                Email = 'default@email.com',
+                AccountId = acc.Id
+            );
+            contactsToInsert.add(newContact);
+            }
+            if (!contactsToInsert.isEmpty()) {
+                insert contactsToInsert;
+        }
     }
 }
