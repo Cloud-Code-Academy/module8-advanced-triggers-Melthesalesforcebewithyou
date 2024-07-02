@@ -7,6 +7,7 @@ This class is intended to modularize the logic used in the `AccountTrigger` to e
 This class is currently stubbed out. As part of this exercise, you are expected to:
 1. Implement the method bodies to carry out the specified operations on Account records.
 2. Refactor the `AccountTrigger` to utilize the methods provided in this `AccountHelper` class.
+    -- Call the AccountHelper methods from within the trigger's context (before/after insert, etc.)
 
 Methods:
 - `setTypeProspect(SObject objects)`: 
@@ -24,23 +25,52 @@ Methods:
     - Purpose: Create a default contact related to the Account after the Account is inserted. You'll need to define the method's signature and implement its logic.
 
 Remember:
-Always ensure that your helper methods are bulk-safe to handle multiple records efficiently. 
+Always ensure that your helper methods are bulk-safe to handle multiple records efficiently.
+--NO SOQL QUERY IN FOR LOOP  
+--Use Lists or Maps 
+--Use for loop to iterate over lists of records 
+--Use if conditions to check and update fields 
+--NO double-nested for loops 
+
 */
 public with sharing class AccountHelper {
     
-    public void setTypeProspect(SObject objects){
+    public static void setTypeProspect(Account acc){
+        //check if Account.Type != 'Prospect' set to 'Prospect'
+        acc.Type = 'Prospect';
+        }
 
+    public static void addressCopy(Account acc){
+        //Set Account.ShippingAddress = Account.BillingAddress
+        acc.BillingStreet = acc.ShippingStreet;
+        acc.BillingCity = acc.ShippingCity;
+        acc.BillingState = acc.ShippingState;
+        acc.BillingPostalCode = acc.ShippingPostalCode;
+        acc.BillingCountry = acc.ShippingCountry;
     }
 
-    void addressCopy(){
-
+    public static void setRating (Account acc) {
+        //Evaluate certain conditions on Account 
+        //Assign Rating based on evaluation 
+        if (acc.Phone != null && acc.Website != null && acc.Fax != null) {
+            acc.Rating = 'Hot';
+        }
     }
 
-    //[public | private ] [static] data_type setRating (input parameters) {
-    //  The body of the method
-    //}
-
-    //[public | private ] [static] data_type defaultContact (input parameters) {
-    //  The body of the method
-    //}
+    public static void defaultContact (List<Account> accounts) {
+        //Create default Contact related to the Account AFTER insert
+        //insert Contacts
+        List<Contact> contactsToInsert = new List<Contact>();
+        for (Account acc : accounts) {
+            Contact newContact = new Contact(
+                LastName = 'DefaultContact',
+                Email = 'default@email.com',
+                AccountId = acc.Id
+            );
+            contactsToInsert.add(newContact);
+            }
+            if (!contactsToInsert.isEmpty()) {
+                insert contactsToInsert;
+        }
+    }
 }
