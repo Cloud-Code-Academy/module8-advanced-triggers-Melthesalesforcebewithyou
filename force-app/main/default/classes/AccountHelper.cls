@@ -30,23 +30,31 @@ Always ensure that your helper methods are bulk-safe to handle multiple records 
 --Use Lists or Maps 
 --Use for loop to iterate over lists of records 
 --Use if conditions to check and update fields 
+--NO double-nested for loops 
+
 */
 public with sharing class AccountHelper {
     
-    public void setTypeProspect(SObject objects){
+    public static void setTypeProspect(List<Account> accounts){
         //check if Account.Type != 'Prospect' set to 'Prospect'
+        for (Account acc : accounts) {
+            if (acc.Type != 'Prospect') {
+                acc.Type = 'Prospect'; 
+            }
+        }
     }
 
-    public void addressCopy(){
+    public static void addressCopy(List<Account> accounts){
         //Set Account.ShippingAddress = Account.BillingAddress
+
     }
 
-    public void setRating (input parameters) {
+    public void setRating (List<Account> accounts) {
         //Evaluate certain conditions on Account 
         //Assign Rating based on evaluation 
     }
 
-    public void defaultContact (input parameters) {
+    public void defaultContact (List<Account> accounts) {
         //Create default Contact related to the Account AFTER insert
         //insert Contacts
     }
